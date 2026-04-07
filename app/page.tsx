@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type LocationPreference = "beach" | "city" | "mountains" | "simple" | "";
@@ -80,6 +80,21 @@ const priorityOptionContent: Record<Priority, { label: string; graphic: string }
   simplicity: { label: "Keeping life simple and uncluttered", graphic: "✨" },
 };
 
+function ProgressIndicator({ current, total }: { current: number; total: number }) {
+  return (
+    <div className="flex gap-2">
+      {Array.from({ length: total }).map((_, index) => (
+        <div
+          key={index}
+          className={`h-2 flex-1 rounded-full ${
+            index < current ? "bg-zinc-900" : "bg-zinc-200"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function Home() {
   const router = useRouter();
   const [step, setStep] = useState<"intro" | "questions" | "results" | "financial" | "email">("intro");
@@ -92,10 +107,15 @@ export default function Home() {
   const [remoteIncomeStatus, setRemoteIncomeStatus] = useState<RemoteIncomeStatus>("");
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+  const [introNameError, setIntroNameError] = useState("");
   const [emailFormError, setEmailFormError] = useState("");
   const [questionErrors, setQuestionErrors] = useState<Partial<Record<QuestionKey, string>>>({});
   const [showValidationSummary, setShowValidationSummary] = useState(false);
   const [financialError, setFinancialError] = useState("");
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [step]);
 
   const clearQuestionError = (key: QuestionKey) => {
     setQuestionErrors((current) => {
@@ -121,11 +141,15 @@ export default function Home() {
   };
 
   const optionCardClass = (selected: boolean) =>
-    `block cursor-pointer rounded-lg border p-4 shadow-sm transition ${
+    `block cursor-pointer rounded-xl border p-4 transition ${
       selected
-        ? "border-blue-500 bg-blue-100"
-        : "border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50"
+        ? "border-zinc-900 bg-zinc-100"
+        : "border-zinc-300 bg-white hover:border-zinc-500 hover:bg-zinc-50"
     }`;
+  const primaryButtonClass =
+    "mx-auto flex h-10 w-full max-w-md items-center justify-center rounded-lg border border-emerald-600 bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:border-emerald-700 hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:border-emerald-200 disabled:bg-emerald-200 disabled:text-emerald-700";
+  const secondaryButtonClass =
+    "mt-3 mx-auto block w-fit text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900";
 
   const canRevealResults =
     locationPreference !== "" && workHours !== "" && workType !== "" && priorities.length > 0;
@@ -306,6 +330,20 @@ export default function Home() {
   const canShowFinancialResults =
     savingsRange !== "" && remoteIncomeStatus !== "" && estimatedCost !== null && estimatedMonthlyNeeded !== null;
 
+  const displayName = firstName.trim();
+  const displayNamePossessive = displayName
+    ? `${displayName}${displayName.toLowerCase().endsWith("s") ? "'" : "'s"}`
+    : "";
+
+  const handleStartQuestions = () => {
+    if (!displayName) {
+      setIntroNameError("Please enter your first name so we can personalize your experience.");
+      return;
+    }
+    setIntroNameError("");
+    setStep("questions");
+  };
+
   const handleContinueFromFinancial = () => {
     if (!canShowFinancialResults) {
       setFinancialError("Please choose your savings range and remote income status to continue.");
@@ -350,59 +388,78 @@ export default function Home() {
     }
 
     setEmailFormError("");
-    router.push("/thank-you");
+    router.push("/thank-you", { scroll: true });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white px-4 py-10 text-slate-900 sm:px-6">
-      <main className="mx-auto w-full max-w-xl rounded-2xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">
+    <div className="min-h-screen bg-zinc-100 px-4 py-10 text-zinc-950 sm:px-6">
+      <main className="mx-auto w-full max-w-2xl rounded-2xl border border-zinc-300 bg-white p-6 shadow-sm sm:p-8">
         {step === "intro" ? (
           <section className="space-y-6">
-            <p className="text-sm font-medium text-gray-600">Design Your Dream Life</p>
-            <h1 className="text-3xl font-semibold tracking-tight">
+            <ProgressIndicator current={1} total={5} />
+            <p className="text-center text-sm font-medium uppercase tracking-wide text-zinc-500">
+              Design Your Dream Life
+            </p>
+            <h1 className="text-center text-xl font-semibold tracking-tight sm:text-2xl">
               What would your life look like if you weren&apos;t tied to a 9–5?
             </h1>
-            <p className="text-base leading-7 text-gray-600">
-              You&apos;ll answer a few simple questions about your ideal lifestyle. Then we&apos;ll use your
+            <p className="text-base leading-7 text-zinc-600">
+              Just answer a few simple questions about your ideal lifestyle. Then we&apos;ll use your
               answers in the next steps to build a personalized picture of what your new life could look
               like.
             </p>
+            <p className="text-base leading-7 text-zinc-600">
+              To get started, please enter your first name.
+            </p>
+            <input
+              value={firstName}
+              onChange={(event) => {
+                setFirstName(event.target.value);
+                setIntroNameError("");
+              }}
+              className="w-full rounded-lg border border-zinc-300 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none ring-zinc-300 transition focus:ring-2"
+              placeholder="First Name"
+            />
+            {introNameError && <p className="text-sm font-medium text-red-600">{introNameError}</p>}
             <button
               type="button"
-              onClick={() => setStep("questions")}
-              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+              onClick={handleStartQuestions}
+              className={primaryButtonClass}
             >
-              Start with your ideal day
+              Let&apos;s Get Started
             </button>
           </section>
         ) : step === "questions" ? (
           <section className="space-y-6">
+            <ProgressIndicator current={2} total={5} />
             <div className="space-y-4">
-              <p className="text-sm font-medium text-gray-600">Step 2 of 7</p>
-              <p className="text-base text-gray-600">
+              {displayName && (
+                <p className="text-base text-zinc-600">Nice to meet you, {displayName}.</p>
+              )}
+              <p className="text-base text-zinc-600">
                 Designing your ideal life starts with getting clear on what you actually want.
               </p>
-              <p className="text-base text-gray-600">
+              <p className="text-base text-zinc-600">
                 Most people never take the time to do that—they just stay busy.
               </p>
-              <p className="text-base text-gray-600">
+              <p className="text-base text-zinc-600">
                 In the next few steps, you’ll map out what your day could look like if your time was truly
                 your own. Then we’ll show you what that kind of life might look like in Ecuador—and how
                 achievable it could be.
               </p>
-              <h2 className="text-2xl font-semibold tracking-tight">Your Ideal Day</h2>
-              <p className="text-base text-gray-600">Let&apos;s start with a simple question:</p>
-              <p className="text-xl font-semibold text-slate-900">
+              <h2 className="text-xl font-semibold tracking-tight text-zinc-900">Your Ideal Day</h2>
+              <p className="text-base text-zinc-600">Let&apos;s start with a simple question:</p>
+              <p className="text-xl font-semibold text-zinc-900">
                 If your day was truly your own… what would it look like?
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-center text-sm text-zinc-600">
                 Don&apos;t overthink it—just go with what feels right.
               </p>
             </div>
 
             {showValidationSummary && Object.keys(questionErrors).length > 0 && (
-              <div className="rounded-lg border border-amber-300 bg-amber-50 p-4">
-                <p className="text-sm font-semibold text-amber-900">
+              <div className="rounded-xl border border-amber-300 bg-amber-50 p-4">
+                <p className="text-sm font-semibold text-amber-950">
                   Please complete the missing answers before continuing:
                 </p>
                 <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-900">
@@ -417,11 +474,11 @@ export default function Home() {
             <fieldset
               id="question-location"
               tabIndex={-1}
-              className={`space-y-3 rounded-xl border bg-blue-50 p-4 outline-none ${
-                questionErrors.location ? "border-red-400" : "border-gray-200"
+              className={`space-y-3 rounded-xl border bg-zinc-50 p-5 outline-none ${
+                questionErrors.location ? "border-red-400" : "border-zinc-300"
               }`}
             >
-              <p className="text-base font-semibold">
+              <p className="text-base font-semibold text-zinc-900">
                 1. Where do you picture yourself waking up most days?
               </p>
               {locationOptions.map((option) => (
@@ -438,10 +495,10 @@ export default function Home() {
                     className="sr-only"
                   />
                   <span className="flex items-center gap-3">
-                    <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-2 border-slate-300 bg-white text-3xl shadow-sm">
+                    <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-zinc-300 bg-white text-3xl">
                       {locationOptionContent[option].graphic}
                     </span>
-                    <span className="text-slate-800">{locationOptionContent[option].label}</span>
+                    <span className="text-zinc-900">{locationOptionContent[option].label}</span>
                   </span>
                 </label>
               ))}
@@ -453,11 +510,11 @@ export default function Home() {
             <fieldset
               id="question-workHours"
               tabIndex={-1}
-              className={`space-y-3 rounded-xl border bg-blue-50 p-4 outline-none ${
-                questionErrors.workHours ? "border-red-400" : "border-gray-200"
+              className={`space-y-3 rounded-xl border bg-zinc-50 p-5 outline-none ${
+                questionErrors.workHours ? "border-red-400" : "border-zinc-300"
               }`}
             >
-              <p className="text-base font-semibold">
+              <p className="text-base font-semibold text-zinc-900">
                 2. How much do you want to work in a typical day?
               </p>
               {workHoursOptions.map((option) => (
@@ -474,10 +531,10 @@ export default function Home() {
                     className="sr-only"
                   />
                   <span className="flex items-center gap-3">
-                    <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-2 border-slate-300 bg-white text-3xl shadow-sm">
+                    <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-zinc-300 bg-white text-3xl">
                       {workHoursOptionContent[option].graphic}
                     </span>
-                    <span className="text-slate-800">{workHoursOptionContent[option].label}</span>
+                    <span className="text-zinc-900">{workHoursOptionContent[option].label}</span>
                   </span>
                 </label>
               ))}
@@ -489,11 +546,11 @@ export default function Home() {
             <fieldset
               id="question-workType"
               tabIndex={-1}
-              className={`space-y-3 rounded-xl border bg-blue-50 p-4 outline-none ${
-                questionErrors.workType ? "border-red-400" : "border-gray-200"
+              className={`space-y-3 rounded-xl border bg-zinc-50 p-5 outline-none ${
+                questionErrors.workType ? "border-red-400" : "border-zinc-300"
               }`}
             >
-              <p className="text-base font-semibold">
+              <p className="text-base font-semibold text-zinc-900">
                 3. What kind of work feels right to you?
               </p>
               {workTypeOptions.map((option) => (
@@ -510,10 +567,10 @@ export default function Home() {
                     className="sr-only"
                   />
                   <span className="flex items-center gap-3">
-                    <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-2 border-slate-300 bg-white text-3xl shadow-sm">
+                    <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-zinc-300 bg-white text-3xl">
                       {workTypeOptionContent[option].graphic}
                     </span>
-                    <span className="text-slate-800">{workTypeOptionContent[option].label}</span>
+                    <span className="text-zinc-900">{workTypeOptionContent[option].label}</span>
                   </span>
                 </label>
               ))}
@@ -525,14 +582,14 @@ export default function Home() {
             <fieldset
               id="question-priorities"
               tabIndex={-1}
-              className={`space-y-3 rounded-xl border bg-blue-50 p-4 outline-none ${
-                questionErrors.priorities ? "border-red-400" : "border-gray-200"
+              className={`space-y-3 rounded-xl border bg-zinc-50 p-5 outline-none ${
+                questionErrors.priorities ? "border-red-400" : "border-zinc-300"
               }`}
             >
-              <p className="text-base font-semibold">
+              <p className="text-base font-semibold text-zinc-900">
                 4. What matters most in your day-to-day life?
               </p>
-              <p className="text-sm text-gray-600">(Choose up to two)</p>
+              <p className="text-sm text-zinc-600">(Choose up to two)</p>
               {priorityOptions.map((option) => (
                 <label key={option} className={optionCardClass(priorities.includes(option))}>
                   <input
@@ -544,32 +601,32 @@ export default function Home() {
                     className="sr-only"
                   />
                   <span className="flex items-center gap-3">
-                    <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-2 border-slate-300 bg-white text-3xl shadow-sm">
+                    <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-zinc-300 bg-white text-3xl">
                       {priorityOptionContent[option].graphic}
                     </span>
-                    <span className="text-slate-800">{priorityOptionContent[option].label}</span>
+                    <span className="text-zinc-900">{priorityOptionContent[option].label}</span>
                   </span>
                 </label>
               ))}
-              <p className="text-xs text-gray-600">Selected: {priorities.length} of 2</p>
+              <p className="text-xs text-zinc-600">Selected: {priorities.length} of 2</p>
               {questionErrors.priorities && (
                 <p className="text-sm font-medium text-red-600">{questionErrors.priorities}</p>
               )}
             </fieldset>
 
-            <fieldset className="space-y-3 rounded-xl border border-gray-200 bg-blue-50 p-4">
-              <p className="text-base font-semibold">
+            <fieldset className="space-y-3 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
+              <p className="text-base font-semibold text-zinc-900">
                 5. You&apos;ve already given a good outline.
                 <br />
                 This is your chance to make it more real.
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-zinc-600">
                 Is there anything else that&apos;s important to your ideal life?
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-zinc-600">
                 You can take this in any direction, whatever matters to you.
               </p>
-              <ul className="list-disc space-y-1 pl-5 text-sm text-gray-600">
+              <ul className="list-disc space-y-1 pl-5 text-sm text-zinc-600">
                 <li>what your home feels like</li>
                 <li>what your mornings look like</li>
                 <li>what you want easy access to</li>
@@ -580,14 +637,14 @@ export default function Home() {
                 onChange={(event) => setPersonalNotes(event.target.value)}
                 rows={4}
                 placeholder="“I’d love an ocean view in a secure setting, with the ability to walk to beaches, restaurants, and stores. It should feel modern and comfortable, with good access to medical care and a nearby airport.”"
-                className="w-full rounded-lg border border-gray-400 bg-white p-4 text-sm text-slate-800 outline-none ring-gray-300 transition focus:ring-2"
+                className="w-full rounded-lg border border-zinc-300 bg-white p-4 text-sm text-zinc-900 outline-none ring-zinc-300 transition focus:ring-2"
               />
             </fieldset>
 
             <button
               type="button"
               onClick={handleSeeResults}
-              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+              className={primaryButtonClass}
             >
               See my result
             </button>
@@ -595,37 +652,41 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setStep("intro")}
-              className="mt-3 block text-sm font-medium text-gray-600 transition hover:text-gray-800"
+              className={secondaryButtonClass}
             >
               Back to intro
             </button>
           </section>
         ) : step === "results" ? (
           <section className="space-y-6">
-            <p className="text-sm font-medium text-gray-600">Step 3 of 5</p>
-            <h2 className="text-3xl font-semibold tracking-tight">Here’s what your ideal life could look like</h2>
-            <p className="text-base text-gray-600">
+            <ProgressIndicator current={3} total={5} />
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              {displayNamePossessive
+                ? `What ${displayNamePossessive} ideal life could look like`
+                : "What your ideal life could look like"}
+            </h2>
+            <p className="text-base text-zinc-600">
               Based on your answers, this is a first picture of the life you&apos;re moving toward.
             </p>
 
-            <div className="space-y-4 rounded-xl border border-blue-200 bg-blue-50 p-5">
+            <div className="space-y-4 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
               {summarySentences.map((sentence, index) => (
                 <div key={index} className="flex items-start gap-3">
-                  <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-slate-300 bg-white text-2xl shadow-sm">
+                  <span className="mt-1 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-300 bg-white text-2xl">
                     {resultGraphics[index] ?? "✨"}
                   </span>
-                  <p className="pt-1 text-base leading-7 text-slate-800">{sentence}</p>
+                  <p className="text-base leading-7 text-zinc-900">{sentence}</p>
                 </div>
               ))}
             </div>
 
             {estimatedCost && (
-              <div className="space-y-2 rounded-xl border border-blue-200 bg-blue-50 p-5">
-                <p className="text-sm font-medium text-gray-600">Estimated Monthly Cost in Ecuador</p>
-                <p className="text-2xl font-semibold text-slate-900">
+              <div className="space-y-2 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
+                <p className="text-sm font-medium text-zinc-600">Estimated Monthly Cost in Ecuador</p>
+                <p className="text-2xl font-semibold text-zinc-900">
                   ${estimatedCost.min}–{estimatedCost.max}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-zinc-600">
                   This is a directional range based on your chosen lifestyle location.
                 </p>
               </div>
@@ -634,41 +695,47 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setStep("financial")}
-              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+              className={primaryButtonClass}
             >
-              Continue
+              Next Steps
             </button>
 
             <button
               type="button"
               onClick={() => setStep("questions")}
-              className="mt-3 block text-sm font-medium text-gray-600 transition hover:text-gray-800"
+              className={secondaryButtonClass}
             >
               Back to questions
             </button>
           </section>
         ) : step === "financial" ? (
           <section className="space-y-6">
-            <p className="text-sm font-medium text-gray-600">Step 4 of 5</p>
-            <h2 className="text-3xl font-semibold tracking-tight">Could this lifestyle actually work for you?</h2>
-            <p className="text-base text-gray-600">
+            <ProgressIndicator current={4} total={5} />
+            <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">Step 4 of 5</p>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Could this lifestyle actually work for you?</h2>
+            {displayName && (
+              <p className="text-base text-zinc-600">
+                Okay, {displayName}, let&apos;s ground this in practical terms.
+              </p>
+            )}
+            <p className="text-base text-zinc-600">
               Now that you have a clearer picture of the life you want, let&apos;s take a quick look at what
               it might mean financially.
             </p>
-            <p className="text-base text-gray-600">
+            <p className="text-base text-zinc-600">
               This doesn&apos;t need to be exact. The goal is simply to help you get a feel for what this
               lifestyle might require and whether it feels within reach.
             </p>
 
-            <section className="space-y-3 rounded-xl border border-gray-200 bg-blue-50 p-4">
-              <p className="text-base font-semibold">About how much savings do you currently have?</p>
+            <section className="space-y-3 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
+              <p className="text-base font-semibold text-zinc-900">About how much savings do you currently have?</p>
               <select
                 value={savingsRange}
                 onChange={(event) => {
                   setSavingsRange(event.target.value as SavingsRange);
                   setFinancialError("");
                 }}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none ring-gray-300 transition focus:ring-2"
+                className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none ring-zinc-300 transition focus:ring-2"
               >
                 <option value="">Select one option</option>
                 <option value="Under $10k">Under $10k</option>
@@ -679,8 +746,8 @@ export default function Home() {
               </select>
             </section>
 
-            <section className="space-y-3 rounded-xl border border-gray-200 bg-blue-50 p-4">
-              <p className="text-base font-semibold">
+            <section className="space-y-3 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
+              <p className="text-base font-semibold text-zinc-900">
                 Do you currently have income you could continue earning remotely?
               </p>
               {(["Yes", "Maybe", "No"] as RemoteIncomeStatus[]).map((option) => (
@@ -696,51 +763,51 @@ export default function Home() {
                     }}
                     className="sr-only"
                   />
-                  <span className="text-slate-800">{option}</span>
+                  <span className="text-zinc-900">{option}</span>
                 </label>
               ))}
             </section>
 
             {canShowFinancialResults && estimatedCost && estimatedMonthlyNeeded && (
-              <section className="space-y-4 rounded-xl border border-blue-200 bg-blue-50 p-5">
-                <p className="text-lg font-semibold text-slate-900">What this could look like financially</p>
+              <section className="space-y-4 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
+                <p className="text-lg font-semibold text-zinc-900">What this could look like financially</p>
 
-                <div className="space-y-1 rounded-lg border border-blue-100 bg-white p-4">
-                  <p className="text-sm text-gray-600">
+                <div className="space-y-1 rounded-lg border border-zinc-300 bg-white p-4">
+                  <p className="text-sm text-zinc-600">
                     A lifestyle like the one you described would likely fall in this range:
                   </p>
-                  <p className="text-3xl font-semibold text-slate-900">
+                  <p className="text-3xl font-semibold text-zinc-900">
                     ${estimatedCost.min}–{estimatedCost.max}
                   </p>
                 </div>
 
                 {estimatedRunwayMonths !== null ? (
-                  <div className="space-y-1 rounded-lg border border-blue-100 bg-white p-4">
-                    <p className="text-sm text-gray-600">
+                  <div className="space-y-1 rounded-lg border border-zinc-300 bg-white p-4">
+                    <p className="text-sm text-zinc-600">
                       Based on what you shared, you could likely sustain this lifestyle for about:
                     </p>
-                    <p className="text-3xl font-semibold text-slate-900">{formatRunway(estimatedRunwayMonths)}</p>
+                    <p className="text-3xl font-semibold text-zinc-900">{formatRunway(estimatedRunwayMonths)}</p>
                   </div>
                 ) : (
-                  <div className="space-y-1 rounded-lg border border-blue-100 bg-white p-4">
-                    <p className="text-sm text-gray-600">
+                  <div className="space-y-1 rounded-lg border border-zinc-300 bg-white p-4">
+                    <p className="text-sm text-zinc-600">
                       Even without estimating your runway, this gives you a useful target for what this
                       lifestyle may require each month.
                     </p>
                   </div>
                 )}
 
-                <div className="space-y-1 rounded-lg border border-blue-100 bg-white p-4">
-                  <p className="text-sm text-gray-600">
+                <div className="space-y-1 rounded-lg border border-zinc-300 bg-white p-4">
+                  <p className="text-sm text-zinc-600">
                     To maintain this lifestyle long-term, you&apos;d likely want income of around:
                   </p>
-                  <p className="text-3xl font-semibold text-slate-900">${estimatedMonthlyNeeded}</p>
+                  <p className="text-3xl font-semibold text-zinc-900">${estimatedMonthlyNeeded}</p>
                 </div>
               </section>
             )}
 
-            <p className="text-sm leading-6 text-gray-600">
-              You do not need to have everything figured out right now. The point is to start turning a
+            <p className="text-base leading-7 text-zinc-600">
+              You don&apos;t need to have everything figured out right now. The point is to start turning a
               vague dream into something you can actually see, evaluate, and build toward.
             </p>
 
@@ -749,7 +816,7 @@ export default function Home() {
             <button
               type="button"
               onClick={handleContinueFromFinancial}
-              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+              className={primaryButtonClass}
             >
               Continue
             </button>
@@ -757,40 +824,45 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setStep("results")}
-              className="mt-3 block text-sm font-medium text-gray-600 transition hover:text-gray-800"
+              className={secondaryButtonClass}
             >
               Back to results
             </button>
           </section>
         ) : (
           <section className="space-y-6">
-            <p className="text-sm font-medium text-gray-600">Step 5 of 5</p>
-            <h2 className="text-3xl font-semibold tracking-tight">Get your personalized report by email</h2>
-            <p className="text-base text-gray-600">
+            <ProgressIndicator current={5} total={5} />
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Save Your Personalized Report</h2>
+            {displayName && (
+              <p className="text-base leading-7 text-zinc-700">
+                You&apos;re doing great, {displayName}. Let&apos;s send this to your inbox.
+              </p>
+            )}
+            <p className="text-base leading-7 text-zinc-600">
               You&apos;re one step away from turning this into a practical next move. Enter your email and
               we&apos;ll send a clear version of your lifestyle vision so you can revisit it, reflect on it,
               and use it when you&apos;re ready to plan your next chapter.
             </p>
-            <p className="text-sm text-gray-600">
+            <p className="text-base leading-7 text-zinc-600">
               In your report, you&apos;ll get your personalized lifestyle summary, your estimated monthly
               range, and your financial snapshot in one place so you don&apos;t lose momentum.
             </p>
 
-            <section className="space-y-3 rounded-xl border border-gray-200 bg-blue-50 p-4">
+            <section className="space-y-3 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
               <label className="block space-y-2">
-                <span className="text-sm font-medium text-slate-800">First name</span>
+                <span className="text-sm font-medium text-zinc-900">First name</span>
                 <input
                   value={firstName}
                   onChange={(event) => {
                     setFirstName(event.target.value);
                     setEmailFormError("");
                   }}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none ring-gray-300 transition focus:ring-2"
-                  placeholder="Your first name"
+                  className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none ring-zinc-300 transition focus:ring-2"
+                  placeholder="First Name"
                 />
               </label>
               <label className="block space-y-2">
-                <span className="text-sm font-medium text-slate-800">Email address</span>
+                <span className="text-sm font-medium text-zinc-900">Email address</span>
                 <input
                   type="email"
                   value={email}
@@ -798,17 +870,16 @@ export default function Home() {
                     setEmail(event.target.value);
                     setEmailFormError("");
                   }}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none ring-gray-300 transition focus:ring-2"
+                  className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none ring-zinc-300 transition focus:ring-2"
                   placeholder="you@example.com"
                 />
               </label>
             </section>
 
-            <section className="space-y-2 rounded-xl border border-blue-200 bg-blue-50 p-4">
-              <p className="text-sm font-semibold text-slate-800">Picture yourself:</p>
+            <section className="space-y-2 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
               {locationPreference !== "" && workHours !== "" && priorities.length > 0 && (
-                <p className="text-sm leading-6 text-slate-800">
-                  In an environment that feels like{" "}
+                <p className="text-base leading-7 text-zinc-700">
+                  Picture Yourself in an environment that feels like{" "}
                   {locationOptionContent[locationPreference as Exclude<LocationPreference, "">].label.toLowerCase()},
                   working {workHoursOptionContent[workHours as Exclude<WorkHours, "">].label.toLowerCase()} so you
                   can prioritize {priorities.map((p) => priorityOptionContent[p].label.toLowerCase()).join(" and ")}.
@@ -821,7 +892,7 @@ export default function Home() {
             <button
               type="button"
               onClick={handleEmailSubmit}
-              className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
+              className={primaryButtonClass}
             >
               Finish
             </button>
@@ -829,7 +900,7 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setStep("financial")}
-              className="mt-3 block text-sm font-medium text-gray-600 transition hover:text-gray-800"
+              className={secondaryButtonClass}
             >
               Back to financial snapshot
             </button>
@@ -839,3 +910,4 @@ export default function Home() {
     </div>
   );
 }
+

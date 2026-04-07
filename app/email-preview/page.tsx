@@ -23,7 +23,7 @@ type LeadSnapshot = {
 };
 
 const fallbackSummary = [
-  "You’re shaping a lifestyle that feels more intentional and aligned with what matters to you.",
+  "You're shaping a lifestyle that feels more intentional and aligned with what matters to you.",
   "Your responses suggest a desire for more flexibility, clarity, and room to design your days with purpose.",
   "This is a strong starting point for turning a vague idea into a direction you can actually act on.",
 ];
@@ -47,15 +47,13 @@ export default function EmailPreviewPage() {
   const safeSummary = snapshot?.summarySentences?.length ? snapshot.summarySentences : fallbackSummary;
   const safeCostRange =
     snapshot?.estimatedCostMin && snapshot?.estimatedCostMax
-      ? `$${snapshot.estimatedCostMin}–$${snapshot.estimatedCostMax}`
+      ? `$${snapshot.estimatedCostMin}-$${snapshot.estimatedCostMax}`
       : "Cost range not available";
   const safeMonthlyNeeded = snapshot?.estimatedMonthlyNeeded
     ? `$${snapshot.estimatedMonthlyNeeded}`
     : "Not available";
   const safeRunway = snapshot?.estimatedRunwayDisplay || null;
-  const submittedAtLabel = snapshot?.submittedAt
-    ? new Date(snapshot.submittedAt).toLocaleString()
-    : "Not available";
+  const submittedAtLabel = snapshot?.submittedAt ? new Date(snapshot.submittedAt).toLocaleString() : "Not available";
 
   const userSubject = `${safeName}, your ideal life plan is ready`;
 
@@ -83,7 +81,7 @@ ${safeCostRange} per month
 For many people, this can be meaningfully lower than comparable lifestyles in much of North America, while still offering a great quality of life.
 
 Your Financial Snapshot
-${runwayLine ? `${runwayLine}\n` : ""}To maintain this lifestyle long-term, you’d likely want income of around ${safeMonthlyNeeded} per month.
+${runwayLine ? `${runwayLine}\n` : ""}To maintain this lifestyle long-term, you'd likely want income of around ${safeMonthlyNeeded} per month.
 
 A Simple Way Forward
 1. Get clear on your monthly lifestyle target
@@ -92,11 +90,11 @@ A Simple Way Forward
 4. Start simplifying your current commitments
 
 If You Want Help With This
-If you’d like help thinking through your situation and what this could look like in real life, you may be able to schedule a conversation.
+If you'd like help thinking through your situation and what this could look like in real life, you may be able to schedule a conversation.
 
 [Schedule a conversation]
 
-There’s no pressure here — just something to think about.
+There's no pressure here - just something to think about.
 
 But if part of this resonated, it may be worth taking one small step toward it.`;
   }, [safeCostRange, safeMonthlyNeeded, safeName, safeRunway, safeSummary]);
@@ -139,37 +137,37 @@ ${safeSummary.map((line) => `- ${line}`).join("\n")}`;
   }, [safeCostRange, safeEmail, safeMonthlyNeeded, safeName, safeRunway, safeSummary, snapshot, submittedAtLabel]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white px-4 py-10 text-slate-900 sm:px-6">
+    <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-zinc-50 to-white px-4 py-10 text-zinc-900 sm:px-6 md:py-14">
       <main className="mx-auto w-full max-w-3xl space-y-6">
-        <section className="rounded-2xl border border-gray-300 bg-white p-6 shadow-lg sm:p-8">
-          <p className="text-sm font-medium text-gray-600">Development / Testing</p>
+        <section className="rounded-3xl border border-zinc-300 bg-white/95 p-6 text-center shadow-xl shadow-zinc-200/60 sm:p-8">
+          <p className="text-sm font-medium tracking-wide text-emerald-700/85">Development / Testing</p>
           <h1 className="mt-1 text-3xl font-semibold tracking-tight">Email Preview</h1>
-          <p className="mt-3 text-sm text-gray-600">
+          <p className="mt-3 text-sm text-zinc-600">
             This page is temporary and for development review only. No real emails are being sent.
           </p>
           <div className="mt-4">
-            <Link href="/thank-you" className="text-sm text-gray-600 underline underline-offset-2">
+            <Link href="/thank-you" className="text-sm text-zinc-600 underline underline-offset-2 hover:text-zinc-800">
               Back to Thank You page
             </Link>
           </div>
         </section>
 
-        <section className="rounded-2xl border border-blue-300 bg-blue-50 p-6 shadow-sm sm:p-8">
-          <h2 className="text-xl font-semibold text-slate-900">User Email Preview</h2>
-          <p className="mt-3 text-sm text-slate-800">
+        <section className="rounded-3xl border border-emerald-300 bg-emerald-50/70 p-6 shadow-lg shadow-emerald-100/70 sm:p-8">
+          <h2 className="text-xl font-semibold text-zinc-900">User Email Preview</h2>
+          <p className="mt-3 text-sm text-zinc-800">
             <span className="font-semibold">Subject:</span> {userSubject}
           </p>
-          <pre className="mt-4 whitespace-pre-wrap rounded-lg border border-blue-200 bg-white p-4 text-sm leading-6 text-slate-800">
+          <pre className="mt-4 whitespace-pre-wrap rounded-xl border border-zinc-300 bg-white p-4 text-sm leading-6 text-zinc-800 shadow-sm">
             {userBody}
           </pre>
         </section>
 
-        <section className="rounded-2xl border border-blue-300 bg-blue-50 p-6 shadow-sm sm:p-8">
-          <h2 className="text-xl font-semibold text-slate-900">Coach Notification Email Preview</h2>
-          <p className="mt-3 text-sm text-slate-800">
+        <section className="rounded-3xl border border-emerald-300 bg-emerald-50/70 p-6 shadow-lg shadow-emerald-100/70 sm:p-8">
+          <h2 className="text-xl font-semibold text-zinc-900">Coach Notification Email Preview</h2>
+          <p className="mt-3 text-sm text-zinc-800">
             <span className="font-semibold">Subject:</span> {coachSubject}
           </p>
-          <pre className="mt-4 whitespace-pre-wrap rounded-lg border border-blue-200 bg-white p-4 text-sm leading-6 text-slate-800">
+          <pre className="mt-4 whitespace-pre-wrap rounded-xl border border-zinc-300 bg-white p-4 text-sm leading-6 text-zinc-800 shadow-sm">
             {coachBody}
           </pre>
         </section>
