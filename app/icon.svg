@@ -1,0 +1,21 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lifestyle Quest favicon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0EA5E9"/>
+      <stop offset="55%" stop-color="#22C55E"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="16" y="16" width="480" height="480" rx="120" fill="url(#bg)"/>
+  <circle cx="336" cy="176" r="74" fill="url(#sun)"/>
+  <path d="M90 330C130 274 176 248 220 250C272 252 314 286 356 286C397 286 430 267 458 242V430H90V330Z" fill="#0F172A" fill-opacity="0.23"/>
+  <path d="M88 360C132 321 182 304 232 312C288 321 336 364 398 364C428 364 451 355 468 342V430H88V360Z" fill="#ffffff" fill-opacity="0.24"/>
+  <path d="M130 210L188 154L248 210V314H130V210Z" fill="#F8FAFC" fill-opacity="0.96"/>
+  <rect x="155" y="241" width="64" height="22" rx="8" fill="#0EA5E9"/>
+  <path d="M163 348C202 321 245 312 286 320C317 326 346 343 377 350V392H163V348Z" fill="#16A34A"/>
+</svg>
