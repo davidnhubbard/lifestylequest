@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { InfoTooltip } from "@/components/info-tooltip";
 
 type LocationPreference = "beach" | "city" | "mountains" | "simple" | "";
 type WorkHours =
@@ -769,6 +770,16 @@ export default function Home() {
 
                 <div className="space-y-2 rounded-lg border border-zinc-300 bg-white p-5">
                   <p className="text-sm text-zinc-600">
+                    <InfoTooltip
+                      label="Estimated Monthly Cost"
+                      content={`This is a typical monthly range for the kind of lifestyle you described in Ecuador.
+
+It includes things like housing, food, transportation, and daily living expenses.
+
+Your actual costs may vary depending on location, comfort level, and personal choices.`}
+                    />
+                  </p>
+                  <p className="text-sm text-zinc-600">
                     A lifestyle like the one you described would typically fall in this range:
                   </p>
                   <p className="text-3xl font-semibold text-zinc-900">
@@ -778,6 +789,14 @@ export default function Home() {
 
                 {estimatedRunwayMonths !== null ? (
                   <div className="space-y-2 rounded-lg border border-zinc-300 bg-white p-5">
+                    <p className="text-sm text-zinc-600">
+                      <InfoTooltip
+                        label="Runway"
+                        content={`Your runway is how long your current savings could support this lifestyle without additional income.
+
+It gives you a rough sense of how much time you have to explore, adjust, or build something sustainable.`}
+                      />
+                    </p>
                     <p className="text-sm text-zinc-600">
                       Based on what you shared, you could likely support this lifestyle for about:
                     </p>
@@ -796,6 +815,14 @@ export default function Home() {
                 )}
 
                 <div className="space-y-2 rounded-lg border border-zinc-300 bg-white p-5">
+                  <p className="text-sm text-zinc-600">
+                    <InfoTooltip
+                      label="Monthly Income Needed"
+                      content={`This is an estimate of how much income you’d want each month to comfortably maintain this lifestyle long-term.
+
+It’s a useful target if you’re thinking about remote work, a business, or other income sources.`}
+                    />
+                  </p>
                   <p className="text-sm text-zinc-600">
                     To support this lifestyle long-term, you&apos;d likely want to bring in around:
                   </p>
