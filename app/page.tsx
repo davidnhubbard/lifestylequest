@@ -294,16 +294,6 @@ export default function Home() {
       ].filter((sentence) => sentence.length > 0)
     : [];
 
-  const resultGraphics = canRevealResults
-    ? [
-        locationOptionContent[locationPreference as Exclude<LocationPreference, "">].graphic,
-        workTypeOptionContent[workType as Exclude<WorkType, "">].graphic,
-        priorities.length > 0 ? priorityOptionContent[priorities[0]].graphic : "✨",
-        "🧭",
-        personalNotes.trim() ? "📝" : "",
-      ].filter((graphic) => graphic.length > 0)
-    : [];
-
   const estimatedCost =
     locationPreference !== "" ? costByLocation[locationPreference as Exclude<LocationPreference, "">] : null;
 
@@ -441,7 +431,11 @@ export default function Home() {
           <section className="space-y-8">
             <ProgressIndicator current={2} total={5} />
             <div className="space-y-4">
-              {displayName && <p className="text-base text-zinc-600">Nice to meet you, {displayName}.</p>}
+              {displayName && (
+                <p className="text-xl font-semibold tracking-tight text-zinc-900">
+                  Nice to meet you, {displayName}.
+                </p>
+              )}
               <p className="text-base text-zinc-600">
                 Let&apos;s get a clearer picture of what you actually want your day-to-day life to feel like.
               </p>
@@ -613,7 +607,7 @@ export default function Home() {
               )}
             </fieldset>
 
-            <fieldset className="space-y-4 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
+            <fieldset className="space-y-4 rounded-xl border border-emerald-200 bg-emerald-50/60 p-5">
               <p className="text-base font-semibold text-zinc-900">5. You&apos;ve outlined the basics-now make it more real.</p>
               <p className="text-base text-zinc-700">What else matters to your ideal life?</p>
               <p className="text-sm text-zinc-500">This could be:</p>
@@ -649,46 +643,56 @@ export default function Home() {
             </button>
           </section>
         ) : step === "results" ? (
-          <section className="space-y-6">
+          <section className="space-y-8">
             <ProgressIndicator current={3} total={5} />
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              {displayNamePossessive
-                ? `What ${displayNamePossessive} ideal life could look like`
-                : "What your ideal life could look like"}
-            </h2>
-            <p className="text-base text-zinc-600">
-              Based on your answers, this is a first picture of the life you&apos;re moving toward.
+              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+                {displayName
+                  ? `Here's what ${displayName}'s ideal life could look like`
+                  : "Here's what your ideal life could look like"}
+              </h2>
+            <p className="text-base leading-7 text-zinc-600">
+              Based on what you shared, this is the kind of life you&apos;re describing:
             </p>
 
-            <div className="space-y-4 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
-              {summarySentences.map((sentence, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <span className="mt-1 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-zinc-300 bg-white text-2xl">
-                    {resultGraphics[index] ?? "✨"}
-                  </span>
-                  <p className="text-base leading-7 text-zinc-900">{sentence}</p>
-                </div>
-              ))}
+            <div className="space-y-5 rounded-xl border border-emerald-200 bg-emerald-50/60 p-6">
+              <p className="text-base leading-7 text-zinc-900">
+                {summarySentences[0] || "You&apos;re drawn to a lifestyle that feels more aligned with what matters most to you right now."}
+              </p>
+              <p className="text-base leading-7 text-zinc-900">
+                {summarySentences[1] || "Work still has a place in your life, but in a way that feels more flexible and intentional."}
+              </p>
+              <p className="text-base leading-7 text-zinc-900">
+                {summarySentences[2] || "What matters most right now is shaping your day around what feels meaningful and sustainable."}
+              </p>
+              <p className="text-base leading-7 text-zinc-900">
+                {summarySentences[3] || "Put together, this points to a life you can actively build-step by step-in a way that feels realistic."}
+              </p>
+              {summarySentences[4] && <p className="text-base leading-7 text-zinc-900">{summarySentences[4]}</p>}
             </div>
 
             {estimatedCost && (
-              <div className="space-y-2 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
-                <p className="text-sm font-medium text-zinc-600">Estimated Monthly Cost in Ecuador</p>
+              <div className="space-y-3 rounded-xl border border-zinc-300 bg-zinc-50 p-6">
+                <p className="text-base font-semibold text-zinc-900">What this might look like in Ecuador</p>
                 <p className="text-2xl font-semibold text-zinc-900">
-                  ${estimatedCost.min} - {estimatedCost.max}
+                  ${estimatedCost.min} - {estimatedCost.max} / month
                 </p>
-                <p className="text-sm text-zinc-600">
-                  This is a directional range based on your chosen lifestyle location.
+                <p className="text-base leading-7 text-zinc-600">
+                  For the kind of lifestyle you described, this is a typical monthly range depending on
+                  location and preferences.
                 </p>
               </div>
             )}
+
+            <p className="text-base leading-7 text-zinc-600">
+              For many people, this is the moment where it starts to feel more real.
+            </p>
 
             <button
               type="button"
               onClick={() => setStep("financial")}
               className={primaryButtonClass}
             >
-              Next Steps
+              See if this could work for me
             </button>
 
             <button
@@ -700,26 +704,26 @@ export default function Home() {
             </button>
           </section>
         ) : step === "financial" ? (
-          <section className="space-y-6">
+          <section className="space-y-8">
             <ProgressIndicator current={4} total={5} />
-            <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">Step 4 of 5</p>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Could this lifestyle actually work for you?</h2>
-            {displayName && (
+            <section className="space-y-4 rounded-xl border border-emerald-200 bg-emerald-50/60 p-6">
+              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Could this lifestyle actually work for you?</h2>
               <p className="text-base text-zinc-600">
-                Okay, {displayName}, let&apos;s ground this in practical terms.
+                Now let&apos;s see what this could look like in real life.
               </p>
-            )}
-            <p className="text-base text-zinc-600">
-              Now that you have a clearer picture of the life you want, let&apos;s take a quick look at what
-              it might mean financially.
-            </p>
-            <p className="text-base text-zinc-600">
-              This doesn&apos;t need to be exact. The goal is simply to help you get a feel for what this
-              lifestyle might require and whether it feels within reach.
-            </p>
+              <p className="text-base text-zinc-600">
+                You&apos;ve got a clearer picture of the life you want.
+              </p>
+              <p className="text-base text-zinc-600">
+                Now let&apos;s take a quick, practical look at what it might take to support it.
+              </p>
+              <p className="text-base text-zinc-600">
+                This doesn&apos;t need to be exact&mdash;just enough to give you a sense of what&apos;s possible.
+              </p>
+            </section>
 
             <section className="space-y-3 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
-              <p className="text-base font-semibold text-zinc-900">About how much savings do you currently have?</p>
+              <p className="text-base font-semibold text-zinc-900">Roughly how much savings do you have available?</p>
               <select
                 value={savingsRange}
                 onChange={(event) => {
@@ -739,7 +743,7 @@ export default function Home() {
 
             <section className="space-y-3 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
               <p className="text-base font-semibold text-zinc-900">
-                Do you currently have income you could continue earning remotely?
+                Do you have income you could continue earning from anywhere?
               </p>
               {(["Yes", "Maybe", "No"] as RemoteIncomeStatus[]).map((option) => (
                 <label key={option} className={optionCardClass(remoteIncomeStatus === option)}>
@@ -760,27 +764,30 @@ export default function Home() {
             </section>
 
             {canShowFinancialResults && estimatedCost && estimatedMonthlyNeeded && (
-              <section className="space-y-4 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
+              <section className="space-y-5 rounded-xl border border-emerald-200 bg-emerald-50/60 p-6">
                 <p className="text-lg font-semibold text-zinc-900">What this could look like financially</p>
 
-                <div className="space-y-1 rounded-lg border border-zinc-300 bg-white p-4">
+                <div className="space-y-2 rounded-lg border border-zinc-300 bg-white p-5">
                   <p className="text-sm text-zinc-600">
-                    A lifestyle like the one you described would likely fall in this range:
+                    A lifestyle like the one you described would typically fall in this range:
                   </p>
                   <p className="text-3xl font-semibold text-zinc-900">
-                    ${estimatedCost.min} - {estimatedCost.max}
+                    ${estimatedCost.min} - {estimatedCost.max} / month
                   </p>
                 </div>
 
                 {estimatedRunwayMonths !== null ? (
-                  <div className="space-y-1 rounded-lg border border-zinc-300 bg-white p-4">
+                  <div className="space-y-2 rounded-lg border border-zinc-300 bg-white p-5">
                     <p className="text-sm text-zinc-600">
-                      Based on what you shared, you could likely sustain this lifestyle for about:
+                      Based on what you shared, you could likely support this lifestyle for about:
                     </p>
                     <p className="text-3xl font-semibold text-zinc-900">{formatRunway(estimatedRunwayMonths)}</p>
+                    <p className="text-sm text-zinc-600">
+                      That gives you a meaningful amount of time to explore, adjust, and build something sustainable.
+                    </p>
                   </div>
                 ) : (
-                  <div className="space-y-1 rounded-lg border border-zinc-300 bg-white p-4">
+                  <div className="space-y-2 rounded-lg border border-zinc-300 bg-white p-5">
                     <p className="text-sm text-zinc-600">
                       Even without estimating your runway, this gives you a useful target for what this
                       lifestyle may require each month.
@@ -788,9 +795,9 @@ export default function Home() {
                   </div>
                 )}
 
-                <div className="space-y-1 rounded-lg border border-zinc-300 bg-white p-4">
+                <div className="space-y-2 rounded-lg border border-zinc-300 bg-white p-5">
                   <p className="text-sm text-zinc-600">
-                    To maintain this lifestyle long-term, you&apos;d likely want income of around:
+                    To support this lifestyle long-term, you&apos;d likely want to bring in around:
                   </p>
                   <p className="text-3xl font-semibold text-zinc-900">${estimatedMonthlyNeeded}</p>
                 </div>
@@ -798,8 +805,10 @@ export default function Home() {
             )}
 
             <p className="text-base leading-7 text-zinc-600">
-              You don&apos;t need to have everything figured out right now. The point is to start turning a
-              vague dream into something you can actually see, evaluate, and build toward.
+              You don&apos;t need to have everything figured out right now.
+            </p>
+            <p className="text-base leading-7 text-zinc-600">
+              The important thing is that this is starting to look concrete&mdash;something you can actually plan around.
             </p>
 
             {financialError && <p className="text-sm font-medium text-red-600">{financialError}</p>}
@@ -809,7 +818,7 @@ export default function Home() {
               onClick={handleContinueFromFinancial}
               className={primaryButtonClass}
             >
-              Continue
+              Save this and see my next steps
             </button>
 
             <button
@@ -821,25 +830,26 @@ export default function Home() {
             </button>
           </section>
         ) : (
-          <section className="space-y-6">
+          <section className="space-y-8">
             <ProgressIndicator current={5} total={5} />
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Save Your Personalized Report</h2>
-            {displayName && (
+            <section className="space-y-4 rounded-xl border border-emerald-200 bg-emerald-50/60 p-6">
+              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Save your plan</h2>
               <p className="text-base leading-7 text-zinc-700">
-                You&apos;re doing great, {displayName}. Let&apos;s send this to your inbox.
+                You&apos;ve already done the hard part-getting clear on what you want.
               </p>
-            )}
-            <p className="text-base leading-7 text-zinc-600">
-              You&apos;re one step away from turning this into a practical next move. Enter your email and
-              we&apos;ll send a clear version of your lifestyle vision so you can revisit it, reflect on it,
-              and use it when you&apos;re ready to plan your next chapter.
-            </p>
-            <p className="text-base leading-7 text-zinc-600">
-              In your report, you&apos;ll get your personalized lifestyle summary, your estimated monthly
-              range, and your financial snapshot in one place so you don&apos;t lose momentum.
-            </p>
+              <p className="text-base leading-7 text-zinc-600">
+                Let&apos;s send you a clean version you can come back to.
+              </p>
+              <p className="text-base leading-7 text-zinc-600">
+                Enter your email and we&apos;ll send your personalized summary, cost estimate, and financial
+                snapshot-all in one place.
+              </p>
+              <p className="text-base leading-7 text-zinc-600">
+                That way you can revisit it, refine it, or take the next step when you&apos;re ready.
+              </p>
+            </section>
 
-            <section className="space-y-3 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
+            <section className="space-y-4 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
               <label className="block space-y-2">
                 <span className="text-sm font-medium text-zinc-900">First name</span>
                 <input
@@ -867,15 +877,11 @@ export default function Home() {
               </label>
             </section>
 
-            <section className="space-y-2 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
-              {locationPreference !== "" && workHours !== "" && priorities.length > 0 && (
-                <p className="text-base leading-7 text-zinc-700">
-                  Picture Yourself in an environment that feels like{" "}
-                  {locationOptionContent[locationPreference as Exclude<LocationPreference, "">].label.toLowerCase()},
-                  working {workHoursOptionContent[workHours as Exclude<WorkHours, "">].label.toLowerCase()} so you
-                  can prioritize {priorities.map((p) => priorityOptionContent[p].label.toLowerCase()).join(" and ")}.
-                </p>
-              )}
+            <section className="space-y-2 rounded-xl border border-emerald-200 bg-emerald-50/60 p-5">
+              <p className="text-base leading-7 text-zinc-700">
+                You&apos;re picturing a quieter, more grounded lifestyle-somewhere green and peaceful, with
+                just enough work to stay engaged while keeping your days calm and flexible.
+              </p>
             </section>
 
             {emailFormError && <p className="text-sm font-medium text-red-600">{emailFormError}</p>}
@@ -885,7 +891,7 @@ export default function Home() {
               onClick={handleEmailSubmit}
               className={primaryButtonClass}
             >
-              Finish
+              Send me my plan
             </button>
 
             <button

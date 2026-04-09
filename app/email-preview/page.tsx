@@ -58,7 +58,7 @@ export default function EmailPreviewPage() {
   const userSubject = `${safeName}, your ideal life plan is ready`;
 
   const userBody = useMemo(() => {
-    const summaryBlock = safeSummary.map((line) => `- ${line}`).join("\n");
+    const summaryBlock = safeSummary.join("\n\n");
     const runwayLine = safeRunway
       ? `Based on what you shared, you could likely sustain this lifestyle for about ${safeRunway}.`
       : "";
@@ -73,7 +73,7 @@ Your Ideal Day
 ${summaryBlock}
 
 What This Could Look Like in Ecuador
-A lifestyle like the one you described is very possible in Ecuador.
+A lifestyle like the one you described is very possible in Ecuador, and this is where things start to feel more concrete.
 
 Depending on location and preferences, it typically falls in this range:
 ${safeCostRange} per month
@@ -81,7 +81,7 @@ ${safeCostRange} per month
 For many people, this can be meaningfully lower than comparable lifestyles in much of North America, while still offering a great quality of life.
 
 Your Financial Snapshot
-${runwayLine ? `${runwayLine}\n` : ""}To maintain this lifestyle long-term, you'd likely want income of around ${safeMonthlyNeeded} per month.
+${runwayLine ? `${runwayLine}\n` : ""}To support this lifestyle long-term, you'd likely want income of around ${safeMonthlyNeeded} per month.
 
 A Simple Way Forward
 1. Get clear on your monthly lifestyle target
@@ -111,29 +111,29 @@ But if part of this resonated, it may be worth taking one small step toward it.`
     return `A new lead has completed the Dream Life in Ecuador flow.
 
 Lead Info
-- Name: ${safeName}
-- Email: ${safeEmail}
-- Submitted at: ${submittedAtLabel}
+Name: ${safeName}
+Email: ${safeEmail}
+Submitted at: ${submittedAtLabel}
 
 Questionnaire Answers
-- Location preference: ${snapshot?.locationPreference || "Not provided"}
-- Work hours: ${snapshot?.workHours || "Not provided"}
-- Work type: ${snapshot?.workType || "Not provided"}
-- Priority 1: ${priority1}
-- Priority 2: ${priority2}
+Location preference: ${snapshot?.locationPreference || "Not provided"}
+Work hours: ${snapshot?.workHours || "Not provided"}
+Work type: ${snapshot?.workType || "Not provided"}
+Priority 1: ${priority1}
+Priority 2: ${priority2}
 
 Personal Notes
 ${notes}
 
 Financial Snapshot
-- Savings range: ${snapshot?.savingsRange || "Not provided"}
-- Remote income status: ${snapshot?.remoteIncomeStatus || "Not provided"}
-- Estimated monthly cost range: ${safeCostRange}
-- Estimated monthly income needed: ${safeMonthlyNeeded}
-- Estimated runway: ${safeRunway || "Not available"}
+Savings range: ${snapshot?.savingsRange || "Not provided"}
+Remote income status: ${snapshot?.remoteIncomeStatus || "Not provided"}
+Estimated monthly cost range: ${safeCostRange}
+Estimated monthly income needed: ${safeMonthlyNeeded}
+Estimated runway: ${safeRunway || "Not available"}
 
 Generated Summary
-${safeSummary.map((line) => `- ${line}`).join("\n")}`;
+${safeSummary.map((line, index) => `${index + 1}. ${line}`).join("\n")}`;
   }, [safeCostRange, safeEmail, safeMonthlyNeeded, safeName, safeRunway, safeSummary, snapshot, submittedAtLabel]);
 
   return (
