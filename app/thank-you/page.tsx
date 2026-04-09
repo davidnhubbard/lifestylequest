@@ -32,7 +32,7 @@ export default function ThankYouPage() {
             </p>
           </header>
 
-          <section className="space-y-6 rounded-3xl border border-zinc-300/90 bg-zinc-50/90 p-7 text-left md:p-9">
+          <section className="space-y-6 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-7 text-left md:p-9">
             <h2 className="text-lg font-medium text-zinc-900">What happens next?</h2>
             <ul className="space-y-6">
               <li className="flex gap-5">
