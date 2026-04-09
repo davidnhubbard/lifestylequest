@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -51,24 +51,24 @@ const priorityOptions: Priority[] = [
 ];
 
 const locationOptionContent: Record<Exclude<LocationPreference, "">, { label: string; graphic: string }> = {
-  beach: { label: "Near the ocean, with a slower pace", graphic: "🌅" },
+  beach: { label: "Near the ocean, with a slower pace", graphic: "🌊" },
   city: { label: "In a walkable city with energy and options", graphic: "🏙️" },
   mountains: { label: "Somewhere quiet, green, and peaceful", graphic: "⛰️" },
   simple: { label: "Simple and low-key, without much noise", graphic: "🍃" },
 };
 
 const workHoursOptionContent: Record<Exclude<WorkHours, "">, { label: string; graphic: string }> = {
-  none: { label: "I wouldn’t work at all (at least for now)", graphic: "🌴" },
+  none: { label: "I wouldn't work at all (at least for now)", graphic: "🌴" },
   "1-3 hours": { label: "Just a couple of hours, on my own schedule", graphic: "☕" },
   "3-5 hours": { label: "A balanced few hours of focused work", graphic: "⏱️" },
-  "5+ hours (self-directed)": { label: "I’d still work a full day—but on my terms", graphic: "📅" },
+  "5+ hours (self-directed)": { label: "I'd still work a full day-but on my terms", graphic: "📅" },
 };
 
 const workTypeOptionContent: Record<Exclude<WorkType, "">, { label: string; graphic: string }> = {
   "remote / online": { label: "Something I can do from anywhere", graphic: "💻" },
   "business / project": { label: "Building a small business or project", graphic: "🚀" },
   "helping others": { label: "Helping or working with people directly", graphic: "🤝" },
-  unsure: { label: "I’m still figuring that out", graphic: "🧭" },
+  unsure: { label: "I'm still figuring that out", graphic: "🧭" },
 };
 
 const priorityOptionContent: Record<Priority, { label: string; graphic: string }> = {
@@ -223,12 +223,12 @@ export default function Home() {
 
   const locationSentenceMap: Record<Exclude<LocationPreference, "">, string> = {
     beach:
-      "You’re drawn to a relaxed lifestyle near the coast, where life feels lighter and more open.",
-    city: "You’re energized by a city lifestyle that balances convenience, movement, and daily variety.",
+      "You're drawn to a relaxed lifestyle near the coast, where life feels lighter and more open.",
+    city: "You're energized by a city lifestyle that balances convenience, movement, and daily variety.",
     mountains:
-      "You’re imagining a grounded lifestyle in a quieter setting, with nature and calm built into your day.",
+      "You're imagining a grounded lifestyle in a quieter setting, with nature and calm built into your day.",
     simple:
-      "You’re leaning toward a simple, low-noise lifestyle with less pressure and more room to breathe.",
+      "You're leaning toward a simple, low-noise lifestyle with less pressure and more room to breathe.",
   };
 
   const workStyleMap: Record<Exclude<WorkHours, "">, string> = {
@@ -394,68 +394,67 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-100 px-4 py-10 text-zinc-950 sm:px-6">
       <main className="mx-auto w-full max-w-2xl rounded-2xl border border-zinc-300 bg-white p-6 shadow-sm sm:p-8">
-        {step === "intro" ? (
-          <section className="space-y-6">
+                {step === "intro" ? (
+          <section className="mx-auto max-w-xl space-y-7">
             <ProgressIndicator current={1} total={5} />
             <p className="text-center text-sm font-medium uppercase tracking-wide text-zinc-500">
               Design Your Dream Life
             </p>
-            <h1 className="text-center text-xl font-semibold tracking-tight sm:text-2xl">
-              What would your life look like if you weren&apos;t tied to a 9–5?
+            <h1 className="text-center text-2xl font-semibold tracking-tight sm:text-3xl">
+              What would your life look like if your time was actually your own?
             </h1>
-            <p className="text-base leading-7 text-zinc-600">
-              Just answer a few simple questions about your ideal lifestyle. Then we&apos;ll use your
-              answers in the next steps to build a personalized picture of what your new life could look
-              like.
-            </p>
-            <p className="text-base leading-7 text-zinc-600">
-              To get started, please enter your first name.
-            </p>
-            <input
-              value={firstName}
-              onChange={(event) => {
-                setFirstName(event.target.value);
-                setIntroNameError("");
-              }}
-              className="w-full rounded-lg border border-zinc-300 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none ring-zinc-300 transition focus:ring-2"
-              placeholder="First Name"
-            />
+            <div className="space-y-4">
+              <p className="text-base leading-7 text-zinc-600">
+                Most people never stop long enough to think this through.
+              </p>
+              <p className="text-base leading-7 text-zinc-600">
+                In the next few steps, you&apos;ll map out your ideal day&mdash;and see what it could
+                realistically look like.
+              </p>
+              <p className="text-base leading-7 text-zinc-600">It takes about 2 minutes.</p>
+            </div>
+            <div className="space-y-3">
+              <p className="text-base leading-7 text-zinc-600">Let&apos;s start with your name.</p>
+              <label className="block space-y-2">
+                <span className="text-sm font-medium text-zinc-900">First name</span>
+                <input
+                  value={firstName}
+                  onChange={(event) => {
+                    setFirstName(event.target.value);
+                    setIntroNameError("");
+                  }}
+                  className="w-full rounded-lg border border-zinc-300 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none ring-zinc-300 transition focus:ring-2"
+                  placeholder="First name"
+                />
+              </label>
+            </div>
             {introNameError && <p className="text-sm font-medium text-red-600">{introNameError}</p>}
             <button
               type="button"
               onClick={handleStartQuestions}
               className={primaryButtonClass}
             >
-              Let&apos;s Get Started
+              Start building my plan
             </button>
           </section>
         ) : step === "questions" ? (
-          <section className="space-y-6">
+          <section className="space-y-8">
             <ProgressIndicator current={2} total={5} />
             <div className="space-y-4">
-              {displayName && (
-                <p className="text-base text-zinc-600">Nice to meet you, {displayName}.</p>
-              )}
+              {displayName && <p className="text-base text-zinc-600">Nice to meet you, {displayName}.</p>}
               <p className="text-base text-zinc-600">
-                Designing your ideal life starts with getting clear on what you actually want.
+                Let&apos;s get a clearer picture of what you actually want your day-to-day life to feel like.
               </p>
               <p className="text-base text-zinc-600">
-                Most people never take the time to do that—they just stay busy.
-              </p>
-              <p className="text-base text-zinc-600">
-                In the next few steps, you’ll map out what your day could look like if your time was truly
-                your own. Then we’ll show you what that kind of life might look like in Ecuador—and how
-                achievable it could be.
+                Answer a few quick questions-just go with what feels right.
               </p>
               <h2 className="text-xl font-semibold tracking-tight text-zinc-900">Your Ideal Day</h2>
-              <p className="text-base text-zinc-600">Let&apos;s start with a simple question:</p>
-              <p className="text-xl font-semibold text-zinc-900">
-                If your day was truly your own… what would it look like?
-              </p>
-              <p className="text-center text-sm text-zinc-600">
-                Don&apos;t overthink it—just go with what feels right.
-              </p>
+              <p className="text-base text-zinc-600">If your time was truly your own… what would it look like?</p>
             </div>
+
+            <p className="text-sm text-zinc-500">
+              Start with what feels closest. You can always refine it later.
+            </p>
 
             {showValidationSummary && Object.keys(questionErrors).length > 0 && (
               <div className="rounded-xl border border-amber-300 bg-amber-50 p-4">
@@ -474,7 +473,7 @@ export default function Home() {
             <fieldset
               id="question-location"
               tabIndex={-1}
-              className={`space-y-3 rounded-xl border bg-zinc-50 p-5 outline-none ${
+              className={`space-y-4 rounded-xl border bg-zinc-50 p-5 outline-none ${
                 questionErrors.location ? "border-red-400" : "border-zinc-300"
               }`}
             >
@@ -510,7 +509,7 @@ export default function Home() {
             <fieldset
               id="question-workHours"
               tabIndex={-1}
-              className={`space-y-3 rounded-xl border bg-zinc-50 p-5 outline-none ${
+              className={`space-y-4 rounded-xl border bg-zinc-50 p-5 outline-none ${
                 questionErrors.workHours ? "border-red-400" : "border-zinc-300"
               }`}
             >
@@ -546,7 +545,7 @@ export default function Home() {
             <fieldset
               id="question-workType"
               tabIndex={-1}
-              className={`space-y-3 rounded-xl border bg-zinc-50 p-5 outline-none ${
+              className={`space-y-4 rounded-xl border bg-zinc-50 p-5 outline-none ${
                 questionErrors.workType ? "border-red-400" : "border-zinc-300"
               }`}
             >
@@ -582,14 +581,14 @@ export default function Home() {
             <fieldset
               id="question-priorities"
               tabIndex={-1}
-              className={`space-y-3 rounded-xl border bg-zinc-50 p-5 outline-none ${
+              className={`space-y-4 rounded-xl border bg-zinc-50 p-5 outline-none ${
                 questionErrors.priorities ? "border-red-400" : "border-zinc-300"
               }`}
             >
               <p className="text-base font-semibold text-zinc-900">
                 4. What matters most in your day-to-day life?
               </p>
-              <p className="text-sm text-zinc-600">(Choose up to two)</p>
+              <p className="text-sm text-zinc-500">Choose the two that matter most right now</p>
               {priorityOptions.map((option) => (
                 <label key={option} className={optionCardClass(priorities.includes(option))}>
                   <input
@@ -608,35 +607,27 @@ export default function Home() {
                   </span>
                 </label>
               ))}
-              <p className="text-xs text-zinc-600">Selected: {priorities.length} of 2</p>
+              <p className="text-xs text-zinc-500">Selected: {priorities.length} of 2</p>
               {questionErrors.priorities && (
                 <p className="text-sm font-medium text-red-600">{questionErrors.priorities}</p>
               )}
             </fieldset>
 
-            <fieldset className="space-y-3 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
-              <p className="text-base font-semibold text-zinc-900">
-                5. You&apos;ve already given a good outline.
-                <br />
-                This is your chance to make it more real.
-              </p>
-              <p className="text-sm text-zinc-600">
-                Is there anything else that&apos;s important to your ideal life?
-              </p>
-              <p className="text-sm text-zinc-600">
-                You can take this in any direction, whatever matters to you.
-              </p>
-              <ul className="list-disc space-y-1 pl-5 text-sm text-zinc-600">
+            <fieldset className="space-y-4 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
+              <p className="text-base font-semibold text-zinc-900">5. You&apos;ve outlined the basics-now make it more real.</p>
+              <p className="text-base text-zinc-700">What else matters to your ideal life?</p>
+              <p className="text-sm text-zinc-500">This could be:</p>
+              <ul className="list-disc space-y-1 pl-5 text-sm text-zinc-500">
                 <li>what your home feels like</li>
                 <li>what your mornings look like</li>
-                <li>what you want easy access to</li>
-                <li>or anything that didn&apos;t quite fit above</li>
+                <li>what you want nearby</li>
+                <li>anything that didn&apos;t quite fit above</li>
               </ul>
               <textarea
                 value={personalNotes}
                 onChange={(event) => setPersonalNotes(event.target.value)}
                 rows={4}
-                placeholder="“I’d love an ocean view in a secure setting, with the ability to walk to beaches, restaurants, and stores. It should feel modern and comfortable, with good access to medical care and a nearby airport.”"
+                placeholder="I'd love an ocean view in a secure setting, with the ability to walk to beaches, restaurants, and stores. It should feel modern and comfortable, with good access to medical care and a nearby airport."
                 className="w-full rounded-lg border border-zinc-300 bg-white p-4 text-sm text-zinc-900 outline-none ring-zinc-300 transition focus:ring-2"
               />
             </fieldset>
@@ -646,7 +637,7 @@ export default function Home() {
               onClick={handleSeeResults}
               className={primaryButtonClass}
             >
-              See my result
+              Show me what this looks like
             </button>
 
             <button
@@ -684,7 +675,7 @@ export default function Home() {
               <div className="space-y-2 rounded-xl border border-zinc-300 bg-zinc-50 p-5">
                 <p className="text-sm font-medium text-zinc-600">Estimated Monthly Cost in Ecuador</p>
                 <p className="text-2xl font-semibold text-zinc-900">
-                  ${estimatedCost.min}–{estimatedCost.max}
+                  ${estimatedCost.min} - {estimatedCost.max}
                 </p>
                 <p className="text-sm text-zinc-600">
                   This is a directional range based on your chosen lifestyle location.
@@ -777,7 +768,7 @@ export default function Home() {
                     A lifestyle like the one you described would likely fall in this range:
                   </p>
                   <p className="text-3xl font-semibold text-zinc-900">
-                    ${estimatedCost.min}–{estimatedCost.max}
+                    ${estimatedCost.min} - {estimatedCost.max}
                   </p>
                 </div>
 
@@ -910,4 +901,8 @@ export default function Home() {
     </div>
   );
 }
+
+
+
+
 
